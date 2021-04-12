@@ -34,3 +34,6 @@ export function createTransitionLibrary<S, A>(initialState: S, reducer: Reducer<
     }
   };
 }
+
+export { useAnimatedStyle } from './useAnimatedStyle.js';
+export { useAnimatedValue } from './useAnimatedValue.js';
