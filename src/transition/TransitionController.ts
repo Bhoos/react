@@ -68,6 +68,8 @@ export class TransitionController<State, Action> {
   private holdingAnims: Anim[] = [];
   private reactBatchedUpdates: (fn: () => void) => void;
 
+  private onCatchupComplete: (prevState: State, nextState: State) => | null;
+
   constructor(reducer: Reducer<State, Action>, reactBatchedUpdates?: (fn: () => void) => void) {
     this.reducer = reducer;
     this.reactBatchedUpdates = reactBatchedUpdates || ((fn: () => void) => {
@@ -105,9 +107,12 @@ export class TransitionController<State, Action> {
     }
   }
 
-  catchup = () => {
+  catchup = (onCatchupComplete?: () => void) => {
     // Set the abort flag
     this.aborted = true;
+
+    // @ts-ignore
+    this.onCatchupComplete = onCatchupComplete || null;
 
     // Stop any running animations
     if (this.currentAnims) {
@@ -225,6 +230,12 @@ export class TransitionController<State, Action> {
 
         // It might be possible that the backlog was processed
         this.backLogs.forEach(cb => cb());
+
+        // notify that the catch up has been completed
+        if (this.onCatchupComplete) {
+          this.onCatchupComplete(prevState, this.currentState);
+          this.onCatchupComplete = null;
+        }
       }
 
       // Continue with the remaining actions only
