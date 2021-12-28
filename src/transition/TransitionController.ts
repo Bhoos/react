@@ -236,6 +236,13 @@ export class TransitionController<State, Action> {
           this.onCatchupComplete(prevState, this.currentState);
           this.onCatchupComplete = null;
         }
+
+        // update the state after the catchup has been completed
+        if (this.currentState !== prevState) {
+          this.updateState(this.currentState, this.currentState)
+        }
+
+        return;
       }
 
       // Continue with the remaining actions only
