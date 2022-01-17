@@ -1,0 +1,41 @@
+# This workflow check current version and the latest tag version
+# if current version and latest version is same than PR check fail
+# if current version and latest version is not same than PR check pass
+
+name: PR Check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  pr-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: Get current version and tag
+        run: |
+          vercmp() {
+              version1=$1 version2=$2 condition=$3
+              IFS=. v1_array=($version1) v2_array=($version2)
+              v1=$((v1_array[0] * 100 + v1_array[1] * 10 + v1_array[2]))
+              v2=$((v2_array[0] * 100 + v2_array[1] * 10 + v2_array[2]))
+              diff=$((v2 - v1))
+              [[ $condition = '='  ]] && ((diff == 0)) && return 0
+              [[ $condition = '!=' ]] && ((diff != 0)) && return 0
+              [[ $condition = '<'  ]] && ((diff >  0)) && return 0
+              [[ $condition = '<=' ]] && ((diff >= 0)) && return 0
+              [[ $condition = '>'  ]] && ((diff <  0)) && return 0
+              [[ $condition = '>=' ]] && ((diff <= 0)) && return 0
+              return 1
+          }
+          version=$(node -p "require('./package.json').version")
+          tag="$(git describe --tag --abbrev=0 | cut -c 2-)"
+          echo "Version: $version"
+          echo "TAG: $tag"
+          # vercmp "$version" "$tag" ">" && echo "::set-output name=IS_VALID::true" || echo "::set-output name=IS_VALID::false"
+          vercmp "$version" "$tag" ">" && exit 0 || exit 1
