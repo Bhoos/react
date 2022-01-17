@@ -34,14 +34,6 @@ jobs:
           echo "ISSUE_NUMBER=${{github.event.issue.number}}" >> $GITHUB_ENV
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build Changelog
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v1
-        with:
-          configuration: "workflow_config/config.json"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release for moving to production
         uses: ncipollo/release-action@v1
