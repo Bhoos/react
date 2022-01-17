@@ -1,19 +1,17 @@
 
-# When any change is pushed on master, it triggers a beta
-# version release with the @next tag 
-#
-# When a tag is published, it triggers the release flow,
-# which takes the version which is released and converts
-# it into the @latest tag
-name: Process master branch updates
+# When issue is created with title "Deploy" and anybody
+# comment "/deploy" in comment this workflow is triggered.
+# This workflow publish the package in @next tag.
+
+name: Process master branch for @next tag
 
 on:
-  push:
-    branches:
-      - master
+  issue_comment:
+    types: [created]
 
 jobs:
   prepare-master:
+    if: ${{ github.event.issue.title == 'Deploy' && github.event.comment.body == '/deploy' && github.event.issue.state == 'open' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

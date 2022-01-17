@@ -1,5 +1,5 @@
 # Promote staging version to production (latest)
-name: Promote to Production
+name: Promote to Production (@latest tag)
 
 on:
   release:
