@@ -18,6 +18,7 @@ jobs:
 
       - name: Publish release
         run: |
+          echo "ISSUE_NUMBER=$(echo $NUMBER | awk -F'[\#\)]' '{print $2}')" >> $GITHUB_ENV
           pkg=$(node -p "require('./package.json').name")
           version=$(node -p "require('./package.json').version")
           echo "Releasing ${pkg}@${version} to latest"
@@ -25,3 +26,15 @@ jobs:
           npm dist-tag add ${pkg}@${version} latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{github.event.release.name}}
+      # Close issue
+      - name: Close Issue
+        uses: peter-evans/close-issue@v1
+        with:
+          issue-number: ${{ env.ISSUE_NUMBER }}
+          comment: This issue is tested and realeased. Auto-closing issue.
+      # Deletes any release marked as a draft
+      - name: Delete drafts 
+        uses: hugo19941994/delete-draft-releases@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
