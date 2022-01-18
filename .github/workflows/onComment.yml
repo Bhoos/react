@@ -27,7 +27,6 @@ jobs:
       - name: Install Dependencies and publish packages
         run: |
           yarn
-          yarn version --patch
           yarn publish . --tag next
           version=$(node -p "require('./package.json').version")
           echo "RELEASE_VERSION=v${version}" >> $GITHUB_ENV
