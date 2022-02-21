@@ -26,7 +26,7 @@ export class FormController<T extends GenericState> {
    * Keep track of raw input data as provided by the
    * user
    */
-  private inputs: {[K in keyof T]?: string};
+  private inputs: { [K in keyof T]?: string };
 
   /**
    * The parsers defined for this form
@@ -113,14 +113,13 @@ export class FormController<T extends GenericState> {
         },
         body: JSON.stringify(this.state),
       });
-      if (res.status === 500) {
+      if (res.status >= 500 && res.status <= 600) {
         const response = await res.json();
         throw new Error(response.message);
       } else if (res.status === 200) {
         const response = await res.json();
         this.responseHandler(response);
       } else {
-        // const response = await res.text();
         throw new Error(res.statusText);
       }
     } catch (err) {
@@ -154,7 +153,7 @@ export class FormController<T extends GenericState> {
   set<K extends keyof T>(name: K, newValue: T[K]) {
     // Object only if value changes
     if (newValue === this.state[name]) return;
-    this.state = Object.assign({}, this.state, {[name]: newValue});
+    this.state = Object.assign({}, this.state, { [name]: newValue });
     const listeners = this.listeners[name];
     if (listeners) listeners.forEach(l => l(newValue));
   }
