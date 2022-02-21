@@ -120,8 +120,8 @@ export class FormController<T extends GenericState> {
         const response = await res.json();
         this.responseHandler(response);
       } else {
-        // const response = await res.text();
-        throw new Error(res.statusText);
+        const errorObj= await res.json();
+        throw new Error(errorObj.message);
       }
     } catch (err) {
       if (this.errorHandler) {
