@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/react-kit",
-  "version": "2.0.13",
+  "version": "2.0.14",
   "description": "Bhoos React Library",
   "main": "dist/index.js",
   "module": "es6/index.js",
