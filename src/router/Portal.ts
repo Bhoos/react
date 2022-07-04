@@ -1,6 +1,6 @@
 import { createElement, useEffect } from 'react';
 import { Router, RouterContext } from './Router.js';
-import { useRoute } from './hooks.js';
+import { useRoute, useRouter } from './hooks.js';
 import { Route } from './Route.js';
 
 type Props = {
@@ -16,6 +16,8 @@ type Props = {
 export function Portal({ router, onRouteChange }: Props) {
   // List for change on the route
   const route = useRoute(router);
+  const parentRouter = useRouter();
+  if (parentRouter !== router) router.setParent(parentRouter);
 
   useEffect(() => {
     if (onRouteChange && route) onRouteChange(route);

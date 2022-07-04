@@ -65,6 +65,10 @@ export class Router {
     };
   };
 
+  setParent = (parentRouter: Router) => {
+    this.parentRouter = parentRouter;
+  }
+
   setChildUrl = (childUrl: string) => {
     this.childListeners.forEach(c => {
       c.pushUrl(childUrl);
@@ -204,8 +208,9 @@ export class Router {
    */
   pushUrl = async (url: string | null): Promise<Route> => {
     if ((url || '').startsWith('/') && this.parentRouter) {
-      this.parentRouter.pushUrl(url);
+      return this.parentRouter.pushUrl(url);
     }
+
     return this.updateUrl(url, this.push);
   };
   private async updateUrl(url: string, op: (route: Route) => void): Promise<Route> {
