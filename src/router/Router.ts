@@ -26,6 +26,7 @@ export class Router {
   private childListeners: Array<Router> = [];
   private ConfirmTransitions: Array<ConfirmTransition> = [];
   private currentTransition: Array<ConfirmTransition> | null = null;
+  private onRouteTransition: (route: string) => Promise<void>;
   /**
    * Create a router for handling route changes, with a
    * custom url mapper that is used by `setUrl`, for mapping
@@ -47,6 +48,10 @@ export class Router {
     this.mapUrl = mapUrl; 
     if (initialUrl) this.setUrl(initialUrl); 
   };
+
+  setOnRouteTransition = (transitionHandler: (route: string) => Promise<void>) => {
+    this.onRouteTransition = transitionHandler;
+  }
 
   private getRecentUrl(): string | null {
     if (this.recentUrl) return this.recentUrl;
@@ -210,6 +215,10 @@ export class Router {
   };
   private async updateUrl(url: string, op: (route: Route) => void): Promise<Route> {
     let newRoute: Route;
+    if (this.onRouteTransition) {
+      await this.onRouteTransition(url);
+    }
+
     if (this.mapUrl) {
       newRoute = this.mapUrl(url || '', this.setChildUrl);
       op(newRoute);
