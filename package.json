@@ -25,6 +25,9 @@
   },
   "author": "Ranjan Shrestha",
   "license": "MIT",
+  "dependencies": {
+    "@bhoos/utils": "^1.0.69"
+  },
   "devDependencies": {
     "@types/react": "^17.0.19",
     "jest": "^26.6.3",

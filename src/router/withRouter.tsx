@@ -1,9 +1,8 @@
-import React, { createElement, useCallback, useEffect, useState } from "react";
-import { Portal } from "./Portal.js";
-import { Router } from "./Router.js";
+import React, { useEffect, useState } from 'react';
+import { Portal } from './Portal.js';
+import { Router } from './Router.js';
 
 export function withRouter<T extends {}>(App: React.FC<T>, getInitialUrl: () => Promise<string>) {
-
   const mapRoute = (router: Router) => {
     router.use('/', null);
   };
@@ -20,9 +19,7 @@ export function withRouter<T extends {}>(App: React.FC<T>, getInitialUrl: () => 
 
     // When loading the initial url, avoid rendering the app
     if (!initialUrl) return null;
-    
-    return (
-      <Portal mapRoute={mapRoute} home={() => <App {...props} />} />
-    );
-  }
+
+    return <Portal mapRoute={mapRoute} home={() => <App {...props} />} />;
+  };
 }

@@ -3,9 +3,9 @@ import { Route } from './Route.js';
 import { Router } from './Router.js';
 
 type ContextType = {
-  route: Route,
-  router: Router,
-}
+  route: Route;
+  router: Router;
+};
 
 export const RouterContext = createContext<ContextType | null>(null);
 
@@ -23,7 +23,7 @@ export function useParentRouter() {
 
 /**
  * to be used only the App-level
- * since @useRouterPortal returns a null, we need to check for null in the app-level code.
+ * since @useParentRouter returns a null, we need to check for null in the app-level code.
  * otherwise, the ts-compiler will complain.
  * To make it more ergonomic, we simply use **useRouter** in the app-level.
  */
@@ -48,7 +48,7 @@ export function useRoute() {
   const ctx = useContext(RouterContext);
   if (!ctx) {
     throw new Error(
-      'useRoute used outside of context'
+      'Router Error: useRoute should always be called within the context of the Portal. \n Did you wrap your component with Portal',
     );
   }
 

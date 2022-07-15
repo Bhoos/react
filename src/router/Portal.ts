@@ -1,29 +1,33 @@
-import { createElement, useEffect } from 'react';
-import { Router, RouterContext } from './Router.js';
-import { useRoute } from './hooks.js';
+import React, { createElement, useState } from 'react';
 import { Route } from './Route.js';
+import { RouterContext, useParentRouter } from './context.js';
+import { Router } from './Router.js';
 
 type Props = {
-  router: Router,
-  onRouteChange?: (nextRoute: Route) => void,
+  mapRoute: (router: Router) => void;
+  home: React.FC<any>;
+  onRouteChange?: (route: Route) => void;
 };
 
-/**
- * A portal renders the current route for the given router,
- * and provides the router to the underlying components via
- * context.
- */
-export function Portal({ router, onRouteChange }: Props) {
-  // List for change on the route
-  const route = useRoute(router);
+export function Portal({ mapRoute, home }: Props) {
+  // Get the parent router, this can be null in case of the top level router
+  const parentRouter = useParentRouter();
 
-  useEffect(() => {
-    if (onRouteChange && route) onRouteChange(route);
-  }, [route, onRouteChange]);
+  // Get an initial Route for initial render, the router will always return an
+  // initial route, either via parent router or the default route
+  const [route, setRoute] = useState<Route | null>();
+  const [router] = useState(() => new Router(mapRoute, setRoute, parentRouter));
 
-  // Do not render anything until a route is available
-  if (!route) return null;
-  
+  const routeToRender = parentRouter?.getInitialRoute(router) || route || router.init(home);
 
-  return createElement(RouterContext.Provider, { value: router }, route.createElement());
+  return createElement(
+    RouterContext.Provider,
+    {
+      value: {
+        router,
+        route: routeToRender,
+      },
+    },
+    routeToRender.createElement(),
+  );
 }
