@@ -1,5 +1,4 @@
 import React from 'react';
-import { Router } from './Router.js';
 
 type Component<P extends {}> = React.FC<P>;
 
@@ -8,7 +7,6 @@ type Component<P extends {}> = React.FC<P>;
  * via react.
  */
 export class Route<P extends {} = {}> {
-  readonly router: Router;
   readonly params: P;
   readonly component: Component<P>;
 

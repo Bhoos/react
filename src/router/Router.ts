@@ -64,7 +64,7 @@ export class Router {
       return this.setRoute(this.stack[this.stack.length - 1]);
     }
 
-    /**r
+    /**
      * if this is the last route in this current router, and we have a parent router
      * set the last route from the parent route
      */
@@ -94,6 +94,7 @@ export class Router {
 
     this.currentRoute = undefined;
     this.mapRoute(this);
+    this.currentUrl = null;
 
     return this.show(this.currentRoute);
   };
