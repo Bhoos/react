@@ -15,41 +15,51 @@ export class Router {
   private currentUrl?: Url;
   private currentRoute?: Route<any>;
 
-  constructor(mapRoute: MapRoute, setRoute: SetRoute, parentRouter: ParentRouter) {
+  constructor(mapRoute: MapRoute, setRoute: SetRoute, parentRouter: ParentRouter, initialUrl: string) {
     this.setRoute = setRoute;
     this.mapRoute = mapRoute;
     this.parentRouter = parentRouter;
+
+    if (initialUrl) {
+      this.currentUrl = new Url(initialUrl)
+      this.mapRoute(this);
+      if (this.currentRoute && this.currentRoute.component)  { 
+        this.stack.push(this.currentRoute) 
+      };
+    }
   }
 
-  public getInitialRoute(childRouter: Router) {
+  public getInitialRoute = (childRouter: Router) => {
     if (!this.currentUrl || !this.currentUrl.isRemaining()) return null;
 
     childRouter.currentUrl = this.currentUrl.getRemaining();
+    this.currentUrl = null;
 
     childRouter.currentRoute = undefined;
     childRouter.mapRoute(childRouter);
-    childRouter.currentUrl = null;
 
     return childRouter.currentRoute;
-  }
+  };
 
-  public init(Component: React.FC) {
+  public init = (Component: React.FC) => {
+    if (this.stack.length) return this.stack[0]
+
     const headRoute = new Route(Component);
 
     this.stack = [headRoute];
 
     return headRoute;
-  }
+  };
 
-  public use<T extends {}>(path: string, Component: React.FC<T>) {
+  public use = <T extends {}>(path: string, Component: React.FC<T>) => {
     if (!this.currentUrl) return;
-
+``
     const props = this.currentUrl.match(path) as T;
 
     if (props) {
       this.currentRoute = new Route(Component, props);
     }
-  }
+  };
 
   public show<T extends {}>(route?: Route<T>) {
     if (route) this.stack.push(route);
@@ -94,7 +104,7 @@ export class Router {
 
     this.currentRoute = undefined;
     this.mapRoute(this);
-    this.currentUrl = null;
+    if (!this.currentUrl.isRemaining()) this.currentUrl = null;
 
     return this.show(this.currentRoute);
   };

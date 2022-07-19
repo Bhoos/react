@@ -20,6 +20,6 @@ export function withRouter<T extends {}>(App: React.FC<T>, getInitialUrl: () => 
     // When loading the initial url, avoid rendering the app
     if (!initialUrl) return null;
 
-    return <Portal mapRoute={mapRoute} home={() => <App {...props} />} />;
+    return <Portal initialUrl={initialUrl} mapRoute={mapRoute} home={() => <App {...props} />} />;
   };
 }

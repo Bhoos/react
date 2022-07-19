@@ -29,7 +29,7 @@ export class Url {
    * @param path
    * @returns
    */
-  match(path: string) {
+  match = (path: string) => {
     // Check if the url has already been used
     if (this.remaining) return null;
 
@@ -56,18 +56,17 @@ export class Url {
     }
 
     return params;
-  }
-
-  getRemaining() {
-    return new Url(this);
-  }
-
-  isRemaining = () => {
-    if (!this.remaining || !this.remaining.length) return false;
-    return true;
   };
 
-  equals(uri: string) {
+  getRemaining = () => {
+    return new Url(this);
+  };
+
+  isRemaining = () => {
+    return this.remaining && this.remaining.length;
+  };
+
+  equals = (uri: string) => {
     const [urlPath, searchQueryPath] = uri.split('?');
 
     /* check only the uri path first */
@@ -78,7 +77,7 @@ export class Url {
     if (!shallowEqual(this.query, splitSearchPath(searchQueryPath))) return false;
 
     return true;
-  }
+  };
 }
 
 function splitSearchPath(search: string) {
