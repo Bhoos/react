@@ -117,7 +117,7 @@ Parser checks the grammar of the input. They contribute towards validations.
 
 ### useFormController()
 
-`useFormController()` hook returns an instance of FormController which provides us with methods like `getState()` , `get` , `getInput` , `set`,`setInput()` and many more .
+`useFormController()` hook returns an instance of FormController which provides us with methods like `getState()` , `get()` , `getInput()` , `set()`,`setInput()` and many more .
 
 ### useFormInput()
 
